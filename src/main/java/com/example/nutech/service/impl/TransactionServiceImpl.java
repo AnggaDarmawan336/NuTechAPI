@@ -17,13 +17,13 @@ import com.example.nutech.repository.TransactionRepository;
 import com.example.nutech.repository.UserRepository;
 import com.example.nutech.security.JwtUtils;
 import com.example.nutech.service.TransactionService;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
@@ -74,7 +74,14 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userRepository.findByEmail(email);
 
         Balance balance = balanceRepository.findByUserId(user.getId());
-        balance.setBalance(balance.getBalance() + (topUpRequest.getTopUpAmount()));
+
+        if (balance == null || ObjectUtils.isEmpty(balance) ) {
+            balance = new Balance();
+            balance.setUser(user);
+            balance.setBalance(topUpRequest.getTopUpAmount());
+        } else {
+            balance.setBalance(balance.getBalance() + (topUpRequest.getTopUpAmount()));
+        }
         balanceRepository.save(balance);
 
         // Create and save the transaction
@@ -85,6 +92,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setTotalAmount(topUpRequest.getTopUpAmount());
         transaction.setInvoiceNumber(LocalDateTime.now() + ".000Z");
         transaction.setCreatedOn(LocalDateTime.now());
+        transaction.setDescription("Top Up Balance");
         transactionRepository.save(transaction);
 
         BalanceResponse balanceResponse = new BalanceResponse();
