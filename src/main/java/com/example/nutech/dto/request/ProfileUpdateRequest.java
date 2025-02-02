@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class ProfileUpdateRequestDTO {
+public class ProfileUpdateRequest {
     @JsonProperty("first_name")
     private String firstName;
 

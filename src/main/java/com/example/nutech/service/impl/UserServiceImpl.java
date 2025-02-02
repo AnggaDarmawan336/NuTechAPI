@@ -1,15 +1,14 @@
 package com.example.nutech.service.impl;
 
 import com.example.nutech.dto.request.LoginUserRequest;
-import com.example.nutech.dto.request.ProfileUpdateRequestDTO;
-import com.example.nutech.dto.response.ProfileResponseDTO;
+import com.example.nutech.dto.request.ProfileUpdateRequest;
+import com.example.nutech.dto.response.ProfileResponse;
 import com.example.nutech.dto.response.ResponseDTO;
 import com.example.nutech.dto.response.TokenDTO;
 import com.example.nutech.entity.User;
 import com.example.nutech.repository.UserRepository;
 import com.example.nutech.security.JwtUtils;
 import com.example.nutech.service.UserService;
-import jakarta.validation.Path;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,10 +17,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -92,7 +87,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDTO<ProfileResponseDTO> getProfile(String token){
+    public ResponseDTO<ProfileResponse> getProfile(String token){
         if (token == null || token.isEmpty() || !jwtUtils.validateToken(token)) {
             return new ResponseDTO<>(108, "Token tidak valid atau kadaluwarsa", null);
         }
@@ -103,7 +98,7 @@ public class UserServiceImpl implements UserService {
             return new ResponseDTO<>(108, "Token tidak valid atau kadaluwarsa", null);
         }
 
-        ProfileResponseDTO profileResponse = new ProfileResponseDTO(
+        ProfileResponse profileResponse = new ProfileResponse(
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -114,7 +109,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDTO<ProfileResponseDTO> updateProfile(String token, ProfileUpdateRequestDTO updateRequestDTO){
+    public ResponseDTO<ProfileResponse> updateProfile(String token, ProfileUpdateRequest updateRequestDTO){
         if (!jwtUtils.validateToken(token)){
             return new ResponseDTO<>(108, "Token tidak valid atau kadaluwarsa", null);
         }
@@ -130,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.saveAndFlush(user);
 
-        return new ResponseDTO<>(0, "Update Profile berhasil", new ProfileResponseDTO(
+        return new ResponseDTO<>(0, "Update Profile berhasil", new ProfileResponse(
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),
@@ -139,7 +134,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDTO<ProfileResponseDTO> uploadProfileImage(String token, MultipartFile file){
+    public ResponseDTO<ProfileResponse> uploadProfileImage(String token, MultipartFile file){
         long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
         if (!jwtUtils.validateToken(token)) {
@@ -170,7 +165,7 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e){
             return new ResponseDTO<>(102, "Format Image tidak sesuai", null);
         }
-        return new ResponseDTO<>(0, "Update Profile Image berhasil", new ProfileResponseDTO(
+        return new ResponseDTO<>(0, "Update Profile Image berhasil", new ProfileResponse(
                 user.getEmail(),
                 user.getFirstName(),
                 user.getLastName(),

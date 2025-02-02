@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProfileResponseDTO {
+public class ProfileResponse {
     private String email;
 
     @JsonProperty("first_name")

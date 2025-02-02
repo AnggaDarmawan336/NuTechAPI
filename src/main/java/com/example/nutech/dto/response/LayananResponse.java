@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class ServiceResponse {
+public class LayananResponse {
     @JsonProperty("service_code")
     private String serviceCode;
 

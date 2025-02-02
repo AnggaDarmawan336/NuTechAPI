@@ -1,4 +1,4 @@
-package com.example.nutech.security;
+package com.example.nutech.utils.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
