@@ -20,14 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @Service
-@Validated
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private Validator validator;
 
     @Autowired
     private JwtUtils jwtUtils;

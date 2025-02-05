@@ -49,12 +49,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
         String email = jwtUtils.extractEmail(token);
         User user = userRepository.findByEmail(email);
-
         Balance balance = balanceRepository.findByUserId(user.getId());
-
-        if (balance == null) {
-            return null;
-        }
 
         BalanceResponse newBalance = new BalanceResponse();
         newBalance.setBalance(balance.getBalance());
@@ -106,7 +101,6 @@ public class TransactionServiceImpl implements TransactionService {
         if (token == null || token.isEmpty() || !jwtUtils.validateToken(token)) {
             return new ResponseDTO<>(108, "Token tidak valid atau kadaluwarsa", null);
         }
-
         String email = jwtUtils.extractEmail(token);
         User user = userRepository.findByEmail(email);
 
@@ -147,13 +141,11 @@ public class TransactionServiceImpl implements TransactionService {
     public ResponseDTO<TransactionHistoryWrapper> getTransactionHistory(String token, Integer offSet ,Integer limit){
         String email = jwtUtils.extractEmail(token);
         User user = userRepository.findByEmail(email);
-
         if (token == null || token.isEmpty() || !jwtUtils.validateToken(token)) {
             return new ResponseDTO<>(108, "Token tidak valid atau kadaluwarsa", null);
         }
 
         List<Transaction> transactions;
-
         if (limit != null && limit > 0) {
             transactions = transactionRepository.findByUserIdOrderByCreatedOnDesc(user.getId(), PageRequest.of(offSet, limit));
         } else {
@@ -169,6 +161,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .createdOn(t.getCreatedOn())
                         .build())
                 .toList();
+
         TransactionHistoryWrapper historyWrapperDTO = TransactionHistoryWrapper.builder()
                 .offset(offSet)
                 .limit(limit != null ? limit : transactionHistoryList.size())
